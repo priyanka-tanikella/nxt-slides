@@ -1,0 +1,44 @@
+.slide-item {
+  min-height: 100px;
+  width: 160px;
+  background-color: #ffffff;
+  box-shadow: 5px 5px black;
+  margin: 12px;
+  padding: 12px;
+  list-style: none;
+}
+
+.active-slide-item {
+  min-height: 100px;
+  width: 160px;
+  background-color: #dbeafe;
+  box-shadow: 2px 4px 2px 4px black;
+  margin: 12px;
+  padding: 12px;
+  list-style: none;
+}
+
+.serial-number {
+  margin-top: 30px;
+  font-family: 'Bree Serif';
+  font-size: 18px;
+  color: #475569;
+}
+
+.slide-container {
+  display: flex;
+}
+
+.slide-heading {
+  font-size: 24px;
+  color: #0967d2;
+  font-weight: bold;
+  font-family: 'Bree Serif';
+}
+
+.slide-para {
+  font-size: 20px;
+  color: black;
+  font-weight: bold;
+  font-family: 'Bree Serif';
+}
