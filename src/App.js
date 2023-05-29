@@ -4,6 +4,7 @@ import './App.css'
 import Header from './components/Header'
 import Slides from './components/Slides'
 import ActiveSlide from './components/ActiveSlide'
+import SlideContext from './Context'
 
 // This is the list used in the application. You can move them to any component needed.
 const initialSlidesList = [
@@ -44,72 +45,72 @@ const initialSlidesList = [
   },
 ]
 
+const insert = (arr, index, newItem) => [
+  ...arr.slice(0, index),
+  newItem,
+  ...arr.slice(index),
+]
+
 // Replace your code here
 class App extends Component {
   state = {
     slidesList: initialSlidesList,
-    activeSlide: initialSlidesList[0],
-    headingEl: initialSlidesList[0].heading,
-    descriptionEl: initialSlidesList[0].description,
+    activeIndex: 0,
   }
 
-  onNewClick = () => {
+  changeHeading = value => {
+    const {activeIndex} = this.state
+    this.setState(prevState => {
+      const {slidesList} = prevState
+      const newList = slidesList.map((eachItem, index) => {
+        if (activeIndex === index) {
+          return {...eachItem, heading: value}
+        }
+        return eachItem
+      })
+      return {slidesList: newList}
+    })
+  }
+
+  changeDescription = value => {
+    const {activeIndex} = this.state
+    this.setState(prevState => {
+      const {slidesList} = prevState
+      const newList = slidesList.map((eachItem, index) => {
+        if (activeIndex === index) {
+          return {...eachItem, description: value}
+        }
+        return eachItem
+      })
+      return {slidesList: newList}
+    })
+  }
+
+  changeActiveTab = index => {
+    this.setState({activeIndex: index})
+  }
+
+  onClickNew = () => {
+    const {activeIndex} = this.state
     const newItem = {
       id: uuid(),
       heading: 'Heading',
       description: 'Description',
     }
-    const {slidesList, activeSlide} = this.state
-    const indexNumber = slidesList.indexOf(activeSlide)
-    const lastList = slidesList.slice(indexNumber + 1)
-    const firstList = slidesList.slice(0, indexNumber + 1)
-
-    this.setState({
-      slidesList: [...firstList, newItem, ...lastList],
-      activeSlide: newItem,
-      headingEl: newItem.heading,
-      descriptionEl: newItem.description,
-    })
-  }
-
-  onSlideClick = id => {
-    const {slidesList} = this.state
-    const filteredItem = slidesList.filter(each => each.id === id)
-    this.setState({
-      activeSlide: filteredItem[0],
-      headingEl: filteredItem[0].heading,
-      descriptionEl: filteredItem[0].description,
-    })
-  }
-
-  changingHead = () => {
-    const {slidesList, activeSlide, headingEl} = this.state
-    const indexNumber = slidesList.indexOf(activeSlide)
-    slidesList[indexNumber].heading = headingEl
-    console.log(headingEl)
-  }
-
-  changingPara = () => {
-    const {slidesList, activeSlide, descriptionEl} = this.state
-    const indexNumber = slidesList.indexOf(activeSlide)
-    slidesList[indexNumber].description = descriptionEl
-  }
-
-  onChangeInputHeading = event => {
-    this.setState({headingEl: event.target.value}, this.changingHead)
-  }
-
-  onChangeInputPara = event => {
-    this.setState({descriptionEl: event.target.value}, this.changingPara)
+    this.setState(prevState => {
+      const {slidesList} = prevState
+      const newList = insert(slidesList, activeIndex + 1, newItem)
+      return {slidesList: [...newList]}
+    }, this.changeActiveTab(activeIndex + 1))
   }
 
   render() {
-    const {slidesList, activeSlide, headingEl, descriptionEl} = this.state
-    console.log(headingEl)
+    const {slidesList, activeIndex} = this.state
+
     return (
       <>
         <Header />
-        <button type="button" className="new-button" onClick={this.onNewClick}>
+        <button type="button" className="new-button" onClick={this.onClickNew}>
           <img
             src="https://assets.ccbp.in/frontend/react-js/nxt-slides/nxt-slides-plus-icon.png"
             alt="new plus icon"
@@ -117,20 +118,23 @@ class App extends Component {
           />
           <p className="new-para">New</p>
         </button>
-        <div className="slides">
-          <Slides
-            initialSlidesList={slidesList}
-            onSlideClick={this.onSlideClick}
-            activeSlide={activeSlide}
-          />
-          <ActiveSlide
-            activeSlide={activeSlide}
-            headingEl={headingEl}
-            descriptionEl={descriptionEl}
-            onChangeInputHeading={this.onChangeInputHeading}
-            onChangeInputPara={this.onChangeInputPara}
-          />
-        </div>
+        <SlideContext.Provider
+          value={{
+            slidesList,
+            activeIndex,
+            changeActiveTab: this.changeActiveTab,
+            changeHeading: this.changeHeading,
+            changeDescription: this.changeDescription,
+            onClickNew: this.onClickNew,
+          }}
+        >
+          <>
+            <div className="slides">
+              <Slides />
+              <ActiveSlide />
+            </div>
+          </>
+        </SlideContext.Provider>
       </>
     )
   }

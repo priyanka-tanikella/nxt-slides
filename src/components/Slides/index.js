@@ -1,24 +1,27 @@
 import './index.css'
 import SlideItem from '../SlideItem'
+import SlideContext from '../../Context'
 
-const Slides = props => {
-  const {initialSlidesList, onSlideClick, activeSlide} = props
+const Slides = () => (
+  <SlideContext.Consumer>
+    {value => {
+      const {slidesList} = value
 
-  return (
-    <>
-      <ol>
-        {initialSlidesList.map((each, index) => (
-          <SlideItem
-            slide={each}
-            key={each.id}
-            onSlideClick={onSlideClick}
-            serialNumber={index + 1}
-            isActive={each.id === activeSlide.id}
-          />
-        ))}
-      </ol>
-    </>
-  )
-}
+      return (
+        <>
+          <ol>
+            {slidesList.map((each, index) => (
+              <SlideItem
+                slideDetails={each}
+                key={each.id}
+                serialNumber={index + 1}
+              />
+            ))}
+          </ol>
+        </>
+      )
+    }}
+  </SlideContext.Consumer>
+)
 
 export default Slides
