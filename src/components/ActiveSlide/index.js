@@ -66,6 +66,7 @@ class ActiveSlide extends Component {
                   onChange={onChangeHeading}
                   onBlur={onBlurHeading}
                   value={heading}
+                  className="slide-heading-input"
                 />
               ) : (
                 <h1
@@ -81,6 +82,7 @@ class ActiveSlide extends Component {
                   onBlur={onBlurDescription}
                   onChange={onChangePara}
                   value={description}
+                  className="slide-description-input"
                 />
               ) : (
                 <p className="active-slide-para" onClick={this.onClickPara}>
